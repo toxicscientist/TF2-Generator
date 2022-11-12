@@ -45,7 +45,7 @@ function chooseInArr(arr){
     return arr[Math.ceil(Math.random() * arr.length - 1)]
 }
 
-function format(char, randnum, randsmallnum){
+function format(char, randnum){
     var conditions = ["burning targets", "wet targets", "targets attacked from behind", "bleeding targets", "soaked targets"]
     return char
         .replace("[NUM]", randnum)
@@ -55,7 +55,8 @@ function format(char, randnum, randsmallnum){
 function pickCharacteristic(type){
     randnum = round(5, rng(1, 95));
     type === "cons" ? type = cons : type = pros
-    var char = chooseInArr(type)
+    let char = chooseInArr(type)
+    if(!char) return;
     char.text = format(char.text, randnum)
     char.multiplier = randnum
     return char
@@ -71,8 +72,10 @@ function getEnoughChars(threshold=100, limit=400, stats=12){
         pros = pros.filter(pro => pro.id != currentChar.id)
         cons = cons.filter(con => con.id != currentChar.id)
     }
-    while(quality > limit){
-        var currentChar = pickCharacteristic("cons");
+    while(quality > limit && chars.length < stats){
+        try{
+            var currentChar = pickCharacteristic("cons");
+        } catch(e) {console.log(currentChar)}
         chars.push(currentChar.text)
         quality += currentChar.value * currentChar.multiplier;
         cons = cons.filter(con => con.id != currentChar.id)
