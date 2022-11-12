@@ -73,6 +73,7 @@ let pros = [
     { id: "AIRBLAST_COST", text: "Airblasts cost [NUM]% less ammo to fire", value: 0.625, only: ["FLAMETHROWER"], multiplier: "[NUM]"},
     { id: "AFTERBURN_DAMAGE", text: "Deals [NUM]% more afterburn damage", value: 0.675, only: ["FLAMETHROWER"], multiplier: "[NUM]"},
     { id: "MEDIBEAM_TRANSFER", text: "Damage transfers to all players connected by Medic beams", value: 15, only: ["MELEE"]},
+    { id: "NO_TUMBLE", text: "Grenades do not tumble when fired", value: 10, only: ["GRENADE"]},
     { id: "PYROLAND", text: "On Equip: Visit Pyroland", value: 0},
     { id: "BROADCAST", text: "Broadcasts every successful hit on an enemy player over the death-notice area", only:["MELEE"], value: 0},
 ];
@@ -109,7 +110,7 @@ function format(char, randnum){
     return char
         .replace("[NUM]", randnum)
         .replace("[ECOND]", chooseInArr(conditions))
-        .replace("[HPSRC]", chooseInArr(["medic sources", "health packs", "dispensers"]))
+        .replace("[HPSRC]", chooseInArr(["medic sources", "health packs", "dispensers", "mediguns", "syringe guns", "all sources"]))
         .replace("[VULN]", chooseInArr(["bullet", "explosion", "damage"]))
 }
 
@@ -130,7 +131,7 @@ cons = cons.filter(con => con.not ? !con.not.includes(weapon) : cons)
 pros = pros.filter(pro => pro.only ? pro.only.includes(weapon) : pros)
 cons = cons.filter(con => con.only ? con.only.includes(weapon) : cons)
 
-function getEnoughChars(threshold=100, limit=50, stats=12){
+function getEnoughChars(threshold=100, limit=30, stats=12){
     var chars = []
     var quality = 0
     for(var i = 0; i < rng(2, 3); i++){
@@ -154,4 +155,6 @@ function getEnoughChars(threshold=100, limit=50, stats=12){
 
 var x = getEnoughChars()
 
-document.write(`<h1> ${role.name.toUpperCase()} ${weapon}</h1> ${x[0].join('<p />')} <br /> ${x[1]}`);
+// WHY WONT IT FIND THE DIV???? THATS ALL I WANT! JUST FIND THE DAMN DIV AND WRITE TO IT
+console.log(document.children[0].children)
+document.getElementById('main') = `<h1> ${role.name.toUpperCase()} ${weapon}</h1> ${x[0].join('<p />')}`
