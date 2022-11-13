@@ -161,15 +161,15 @@ let reqclass = params.get('class')
 
 var role = (reqclass == "any" || !reqclass) ? chooseInArr(classes) : classes.find(x => x.name == reqclass)
 var weapon = chooseInArr(role.weapons)
-// removes every weapon where x.not includes it
+// returns every weapon where x.not doesnt includes it
 pros = pros.filter(pro => pro.not ? !pro.not.includes(weapon) : pros)
 cons = cons.filter(con => con.not ? !con.not.includes(weapon) : cons)
-// removes every weapon where x.not doesnt include it
+// returns every weapon where x.only includes it
 pros = pros.filter(pro => pro.only ? pro.only.includes(weapon) : pros)
 cons = cons.filter(con => con.only ? con.only.includes(weapon) : cons)
-// removes every weapon where x.not doesnt include it
-pros = pros.filter(pro => pro.class ? !pro.class.includes(role) : pros)
-cons = cons.filter(con => con.class ? !con.class.includes(role) : cons)
+// retuns every weapon where x.class includes it
+pros = pros.filter(pro => pro.class ? pro.class.includes(role) : pros)
+cons = cons.filter(con => con.class ? con.class.includes(role) : cons)
 
 function getEnoughChars(threshold=100, limit=30, stats=12){
     var chars = []
