@@ -30,7 +30,7 @@ let cons = [
     { id: "AIRBLAST_COST", text: "Airblasts cost [NUM]% more ammo to fire", value: -0.625, only: ["FLAMETHROWER"], multiplier: "[NUM]"},
     { id: "AFTERBURN_DAMAGE", text: "Deals [NUM]% less afterburn damage", value: -0.675, only: ["FLAMETHROWER"], multiplier: "[NUM]"},
     { id: "PROJECTILE_VARIATION", text: "+3 degrees random projectile deviation", only: ["ROCKET", "GRENADE"] , value: -0.625, multiplier: "[NUM]"},
-    { id: "DISPENSER_AMMO", text: "Cannot collect ammo from dispensers while active", not: ["MELEE"] , value: -20},
+    { id: "DISPENSER_AMMO", text: "Cannot collect ammo from dispensers while active", not: ["MELEE"] , value: -10},
     { id: "SCOPE", text: "Cannot scope", only: ["SNIPER"] , value: -40},
     { id: "DAMAGE_VULN", text: "Raises [VULN] vulnerability by [NUM]% when active", value: -0.7, multiplier: "[NUM]"},
     { id: "SNIPER_CHARGE", text: "+[NUM]% maximum charge time", only: ["SNIPER"], value: -0.6, multiplier: "[NUM]"},
@@ -39,8 +39,13 @@ let cons = [
     { id: "BODYSHOT_DAMAGE", text: "-[NUM]% damage penalty on body shot", only: ["SNIPER"], value: -0.5, multiplier: "[NUM]"},
     { id: "SNIPER_ZOOMSHOT", text: "Only fires when zoomed", only: ["SNIPER"], value: -20},
     { id: "SNIPER_TRACER", text: "Shots leave a bright, easily traceable team-colored line behind them", only: ["SNIPER"], value: -20},
+    { id: "SCOPE_INACCURACY", text: "Bullets lose their accuracy if the rifle is scoped for more than 5 seconds", only: ["SNIPER"], value: -20},
+    { id: "REV_INACCURACY", text: "Bullets lose their accuracy if the mingun is revved for more than 5 seconds", only: ["MINIGUN"], value: -20},
     { id: "MAX_OVERHEAL", text: "-[NUM]% maximum overheal", value: -0.75, multiplier: "[NUM]"},
     { id: "OVERHEAL_DECAY", text: "[NUM]% faster overheal decay", value: -0.55, multiplier: "[NUM]"},
+    { id: "CLOAK_DURATION", text: "-[NUM]% cloak duration", class: ["spy"], value: -0.75, multiplier: "[NUM]"},
+    { id: "CLOAK_FROM_AMMO", text: "-[NUM]% cloak meter from ammo boxes", class: ["spy"], value: -0.55, multiplier: "[NUM]"},
+    { id: "CLOAK_RECHARGE", text: "[NUM]% slower cloak recharge rate", class: ["spy"], value: -0.6, multiplier: "[NUM]"},
 ];
 
 let pros = [
@@ -91,6 +96,10 @@ let pros = [
     { id: "SNIPER_PENETRATION", text: "Fully charged shots penetrate players and damage enemies behind them", only: ["SNIPER"], value: 30},
     { id: "MAX_OVERHEAL", text: "+[NUM]% maximum overheal", value: 0.75, multiplier: "[NUM]"},
     { id: "OVERHEAL_DECAY", text: "[NUM]% slower overheal decay", value: 0.55, multiplier: "[NUM]"},
+    { id: "CLOAK_DURATION", text: "+[NUM]% cloak duration", class: ["spy"], value: 0.75, multiplier: "[NUM]"},
+    { id: "CLOAK_FROM_AMMO", text: "+[NUM]% cloak meter from ammo boxes", class: ["spy"], value: 0.55, multiplier: "[NUM]"},
+    { id: "CLOAK_RECHARGE", text: "[NUM]% faster cloak recharge rate", class: ["spy"], value: 0.6, multiplier: "[NUM]"},
+    { id: "CLOAK_ON_KILL", text: "On kill: adds [NUM]% charge to cloak", class: ["spy"], value: 0.8, multiplier: "[NUM]"},
     // { id: "PYROLAND", text: "On Equip: Visit Pyroland", value: 0},
     // { id: "BROADCAST", text: "Broadcasts every successful hit on an enemy player over the death-notice area", only:["MELEE"], value: 0},
 ];
@@ -152,10 +161,15 @@ let reqclass = params.get('class')
 
 var role = (reqclass == "any" || !reqclass) ? chooseInArr(classes) : classes.find(x => x.name == reqclass)
 var weapon = chooseInArr(role.weapons)
+// removes every weapon where x.not includes it
 pros = pros.filter(pro => pro.not ? !pro.not.includes(weapon) : pros)
 cons = cons.filter(con => con.not ? !con.not.includes(weapon) : cons)
+// removes every weapon where x.not doesnt include it
 pros = pros.filter(pro => pro.only ? pro.only.includes(weapon) : pros)
 cons = cons.filter(con => con.only ? con.only.includes(weapon) : cons)
+// removes every weapon where x.not doesnt include it
+pros = pros.filter(pro => pro.class ? !pro.class.includes(role) : pros)
+cons = cons.filter(con => con.class ? !con.class.includes(role) : cons)
 
 function getEnoughChars(threshold=100, limit=30, stats=12){
     var chars = []
@@ -167,7 +181,12 @@ function getEnoughChars(threshold=100, limit=30, stats=12){
         pros = pros.filter(pro => pro.id != currentChar.id)
         cons = cons.filter(con => con.id != currentChar.id)
     }
+    // at least one con
     var currentChar = pickCharacteristic("cons") || pickCharacteristic("cons");
+    if(!currentChar) return [chars, quality];
+    chars.push(`<red>${currentChar.text}</red>`)
+    quality += currentChar.value * currentChar.multiplier;
+    cons = cons.filter(con => con.id != currentChar.id)
 
     while(quality > limit && chars.length < stats){
         var currentChar = pickCharacteristic("cons") || pickCharacteristic("cons");
@@ -197,7 +216,16 @@ var titles = {
 
 var title = titles[role.name.toUpperCase() + " " + weapon] ? titles[role.name.toUpperCase() + " " + weapon] : (role.name.toUpperCase() + " " + weapon)
 
+let quality = x[1]
+var rank;
+if(quality < 0){rank = "Not great"} else
+if(quality < 10){rank = "Not bad"} else
+if(quality < 20){rank = "Decent"} else
+if(quality < 30){rank = "Good"} else
+if(quality >= 30){rank = "Excellent"}
+
 document.getElementById('main').innerHTML = `<h1> ${title}</h1> ${x[0].join('<p />')}`
 let classchoice = '<option value="any">any</option>'
 let classoptions = classes.forEach(classrole => {classchoice += `<option value="${classrole.name}">${classrole.name}</option>`})
 document.getElementById('classes').innerHTML = classchoice
+document.getElementById('footer').innerHTML = rank
