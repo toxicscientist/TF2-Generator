@@ -1,3 +1,4 @@
+//TODO: Move pros and cons to a separate file
 let cons = [
     { id: "CLIP_SIZE", text: "Has a [NUM]% smaller clip", not: ["MELEE", "MEDIGUN"], value: -0.65, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% less damage per bullet", only: ["GUN", "SNIPER"], value: -0.75, multiplier: "[NUM]"},
@@ -104,14 +105,22 @@ let pros = [
     // { id: "BROADCAST", text: "Broadcasts every successful hit on an enemy player over the death-notice area", only:["MELEE"], value: 0},
 ];
 
+//TODO: Give classes stuff like projectiles(eg. sandman), drinks(eg. crit-a-colo), boots(ali baba's wee boties), backpacks(cozy campers), lunchboxes(sandvich), etc
 let classes = [
+    //TODO: Give drinks and projectiles
     { name: "scout", weapons: ["SHOTGUN", "GUN", "MELEE"]},
+    //TODO: Give boots
     { name: "soldier", weapons: ["ROCKET", "SHOTGUN", "MELEE"]},
+    //TODO: Give "GUN" for flare guns
+    //TODO: Also give boots for jetpacks(or just give jetpack)
     { name: "pyro", weapons: ["FLAMETHROWER", "SHOTGUN", "MELEE"]},
+    //TODO: Give boots
     { name: "demoman", weapons: ["GRENADE", "STICKY", "MELEE"]},
+    //TODO: Give lunchbox
     { name: "heavy", weapons: ["MINIGUN", "SHOTGUN", "MELEE"]},
     { name: "engineer", weapons: ["SHOTGUN", "GUN", "MELEE"]},
     { name: "medic", weapons: ["MEDIGUN", "GUN", "MELEE"]},
+    //TODO: Give backpack
     { name: "sniper", weapons: ["SNIPER", "GUN", "MELEE"]},
     { name: "spy", weapons: ["GUN", "MELEE"]},
 ]
@@ -170,7 +179,7 @@ cons = cons.filter(con => con.only ? con.only.includes(weapon) : cons)
 // removes every weapon where x.not include it
 pros = pros.filter(pro => pro.class ? pro.class.includes(role) : pros)
 cons = cons.filter(con => con.class ? con.class.includes(role) : cons)
-console.log(pros)
+
 function getEnoughChars(threshold=100, limit=30, stats=12){
     var chars = []
     var quality = 0
