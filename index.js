@@ -1,5 +1,5 @@
 let cons = [
-    { id: "CLIP_SIZE", text: "Has a [NUM]% smaller clip", not: ["MELEE", " MEDIGUN"], value: -0.65, multiplier: "[NUM]"},
+    { id: "CLIP_SIZE", text: "Has a [NUM]% smaller clip", not: ["MELEE", "MEDIGUN"], value: -0.65, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% less damage per bullet", only: ["GUN", "SNIPER"], value: -0.75, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% less damage per pellet", only: ["SHOTGUN"], value: -0.75, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% less damage", only: ["MELEE"], value: -0.75, multiplier: "[NUM]"},
@@ -49,7 +49,7 @@ let cons = [
 ];
 
 let pros = [
-    { id: "CLIP_SIZE", text: "Has a [NUM]% bigger clip", not: ["MELEE", " MEDIGUN"], value: 0.65, multiplier: "[NUM]"},
+    { id: "CLIP_SIZE", text: "Has a [NUM]% bigger clip", not: ["MELEE", "MEDIGUN"], value: 0.65, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% more damage per bullet", only: ["GUN", "SNIPER", "MINIGUN"], value: 0.75, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% more damage per pellet", only: ["SHOTGUN"], value: 0.75, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% more damage", only: ["MELEE", "FLAMETHROWER"], value: 0.75, multiplier: "[NUM]"},
@@ -161,16 +161,16 @@ let reqclass = params.get('class')
 
 var role = (reqclass == "any" || !reqclass) ? chooseInArr(classes) : classes.find(x => x.name == reqclass)
 var weapon = chooseInArr(role.weapons)
-// returns every weapon where x.not doesnt includes it
+// removes every weapon where x.not includes it
 pros = pros.filter(pro => pro.not ? !pro.not.includes(weapon) : pros)
 cons = cons.filter(con => con.not ? !con.not.includes(weapon) : cons)
-// returns every weapon where x.only includes it
+// removes every weapon where x.not doesnt include it
 pros = pros.filter(pro => pro.only ? pro.only.includes(weapon) : pros)
 cons = cons.filter(con => con.only ? con.only.includes(weapon) : cons)
-// retuns every weapon where x.class includes it
+// removes every weapon where x.not include it
 pros = pros.filter(pro => pro.class ? pro.class.includes(role) : pros)
 cons = cons.filter(con => con.class ? con.class.includes(role) : cons)
-
+console.log(pros)
 function getEnoughChars(threshold=100, limit=30, stats=12){
     var chars = []
     var quality = 0
