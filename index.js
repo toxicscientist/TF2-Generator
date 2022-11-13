@@ -6,9 +6,9 @@ let cons = [
     { id: "KNOCKBACK", text: "[NUM]% increase in push force taken from damage and airblast while deployed", value: -0.6, multiplier: "[NUM]"},
     { id: "SLOWED", text: "[NUM]% slower movement speed on wearer", value: -0.775, multiplier: "[NUM]"},
     { id: "SLOWED", text: "[NUM]% slower movement speed while deployed", value: -0.7, multiplier: "[NUM]"},
-    { id: "RANDOM_CRITS", text: "No random critical hits", value: -10},
-    { id: "CRITS", text: "Critical hits do -[NUM]% damage", value: -0.9, multiplier: "[NUM]"},
-    { id: "CRITS", text: "Critical hits turn into minicrits", value: -30},
+    { id: "RANDOM_CRITS", text: "No random critical hits", not: ["MEDIGUN"], value: -10},
+    { id: "CRITS", text: "Critical hits do -[NUM]% damage", not: ["MEDIGUN"], value: -0.9, multiplier: "[NUM]"},
+    { id: "CRITS", text: "Critical hits turn into minicrits", not: ["MEDIGUN"], value: -30},
     { id: "MAX_PRIM_AMMO", text: "-[NUM]% max primary ammo on wearer", value: -0.65, multiplier: "[NUM]"},
     { id: "DAMAGE_TO_BUILDINGS", text: "-[NUM]% damage to enemy buildings", not: ["MEDIGUN"], value: -0.35, multiplier: "[NUM]"},
     { id: "DAMAGE_TO_PLAYERS", text: "-[NUM]% damage to enemy players", not: ["MEDIGUN"], value: -0.675, multiplier: "[NUM]"},
@@ -22,6 +22,7 @@ let cons = [
     { id: "FIRING_SPEED", text: "[NUM]% slower firing speed", not: ["MEDIGUN", "FLAMETHROWER"], value: -0.7, multiplier: "[NUM]"},
     { id: "JUMP_HEIGHT", text: "Jump height decreased by [NUM]% when active", value: -0.65, multiplier: "[NUM]"},
     { id: "BLEED_ON_MISS", text: "On miss, causes self-damage and bleed to the player for 5 seconds",only: ["MELEE"], value: -25, multiplier: "[NUM]"},
+    { id: "AFTERBURN_ON_MISS", text: "On miss, causes self-damage and afterburn to the player for 5 seconds",only: ["MELEE"], value: -25, multiplier: "[NUM]"},
     { id: "ROCKET_SPEED", text: "Has [NUM]% slower rocket speed", only: ["ROCKET"] , value: -0.65, multiplier: "[NUM]"},
     { id: "SPLASH_DAMAGE", text: "Has [NUM]% smaller splash damage radius.", only: ["ROCKET", "GRENADE", "STICKY"] , value: -0.7, multiplier: "[NUM]"},
     { id: "EXPLOSIVE_SELF_DAMAGE", text: "+[NUM]% blast damage to self", only: ["ROCKET", "GRENADE", "STICKY"] , value: -0.685, multiplier: "[NUM]"},
@@ -32,13 +33,21 @@ let cons = [
     { id: "DISPENSER_AMMO", text: "Cannot collect ammo from dispensers while active", not: ["MELEE"] , value: -20},
     { id: "SCOPE", text: "Cannot scope", only: ["SNIPER"] , value: -40},
     { id: "DAMAGE_VULN", text: "Raises [VULN] vulnerability by [NUM]% when active", value: -0.7, multiplier: "[NUM]"},
+    { id: "SNIPER_CHARGE", text: "+[NUM]% maximum charge time", only: ["SNIPER"], value: -0.6, multiplier: "[NUM]"},
+    { id: "SNIPER_CHARGE_SPEED", text: "-[NUM]% charging movement speed", only: ["SNIPER"], value: -0.3, multiplier: "[NUM]"},
+    { id: "CRITS", text: "Headshots do not crit", only: ["SNIPER"], value:50},
+    { id: "BODYSHOT_DAMAGE", text: "-[NUM]% damage penalty on body shot", only: ["SNIPER"], value: -0.5, multiplier: "[NUM]"},
+    { id: "SNIPER_ZOOMSHOT", text: "Only fires when zoomed", only: ["SNIPER"], value: -20},
+    { id: "SNIPER_TRACER", text: "Shots leave a bright, easily traceable team-colored line behind them", only: ["SNIPER"], value: -20},
+    { id: "MAX_OVERHEAL", text: "-[NUM]% maximum overheal", value: -0.75, multiplier: "[NUM]"},
+    { id: "OVERHEAL_DECAY", text: "[NUM]% faster overheal decay", value: -0.55, multiplier: "[NUM]"},
 ];
 
 let pros = [
     { id: "CLIP_SIZE", text: "Has a [NUM]% bigger clip", not: ["MELEE", " MEDIGUN"], value: 0.65, multiplier: "[NUM]"},
-    { id: "DAMAGE", text: "Deals [NUM]% more damage per bullet", only: ["GUN", "SNIPER"], value: 0.75, multiplier: "[NUM]"},
+    { id: "DAMAGE", text: "Deals [NUM]% more damage per bullet", only: ["GUN", "SNIPER", "MINIGUN"], value: 0.75, multiplier: "[NUM]"},
     { id: "DAMAGE", text: "Deals [NUM]% more damage per pellet", only: ["SHOTGUN"], value: 0.75, multiplier: "[NUM]"},
-    { id: "DAMAGE", text: "Deals [NUM]% more damage", only: ["MELEE"], value: 0.75, multiplier: "[NUM]"},
+    { id: "DAMAGE", text: "Deals [NUM]% more damage", only: ["MELEE", "FLAMETHROWER"], value: 0.75, multiplier: "[NUM]"},
     { id: "EXTRA_JUMP", text: "Grants an additional jump while deployed", value: 30},
     { id: "CRITS", text: "Guarantees Critical damage on [ECOND]", not: ["MEDIGUN", "SNIPER"],value: 10},
     { id: "SLOW_ON_HIT", text: "On hit: slows down enemy players",not: ["MEDIGUN"], value: 30},
@@ -54,13 +63,14 @@ let pros = [
     { id: "UBERCHARGE_RATE", text: "Has [NUM]% faster charge rate", only: ["MEDIGUN"], value: 2, multiplier: "[NUM]"},
     { id: "HEAL_RATE", text: "Heal rate increased [NUM]%", only: ["MEDIGUN"], value: 0.625, multiplier: "[NUM]"},
     { id: "OVERHEAL_RATE", text: "Overheal rate increased [NUM]%", only: ["MEDIGUN"], value: 0.625, multiplier: "[NUM]"},
-    { id: "MEDIC_MIRROR", text: "Medic mirrors blast jump and shield charge of their heal targe", only: ["MEDIGUN"], value: 10},
-    { id: "MAX_HEALTH", text: "Raises max health by [NUM]% on wearer", only: ["MEDIGUN"], value: 0.85, multiplier: "[NUM]"},
+    { id: "MEDIC_MIRROR", text: "Medic mirrors blast jump and shield charge of their heal target", only: ["MEDIGUN"], value: 10},
+    { id: "MAX_HEALTH", text: "Raises max health by [NUM]% on wearer", value: 0.85, multiplier: "[NUM]"},
     { id: "REGEN", text: "When active, +3 health regenerated per second on wearer", value: 40},
     { id: "SEE_ENEM_HEALTH", text: "Allows you to see an enemy's health", value: 40},
     { id: "FIRING_SPEED", text: "[NUM]% faster firing speed", not: ["MEDIGUN", "FLAMETHROWER"], value: 0.7, multiplier: "[NUM]"},
     { id: "JUMP_HEIGHT", text: "Jump height increased by [NUM]% when active", value: 0.65, multiplier: "[NUM]"},
     { id: "HEALTH_DROP", text: "A small health pack is dropped when the player kills an enemy", value: 40},
+    { id: "HEALTH_DROP", text: "A small health pack is dropped when the player kills an enemy with this weapon", not: ["MEDIGUN"],  value: 35},
     { id: "BLEED_ON_HIT", text: "On hit: causes bleed to enemy for 5 seconds", not: ["ROCKET", "GRENADE", "STICKY", "MEDIGUN"], value: 25},
     { id: "MAX_PRIM_AMMO", text: "+[NUM]% max primary ammo on wearer", value: 0.65, multiplier: "[NUM]"},
     { id: "ROCKET_SPEED", text: "Has [NUM]% faster rocket speed", only: ["ROCKET"] , value: 0.65, multiplier: "[NUM]"},
@@ -75,8 +85,14 @@ let pros = [
     { id: "MEDIBEAM_TRANSFER", text: "Damage transfers to all players connected by Medic beams", value: 15, only: ["MELEE"]},
     { id: "NO_TUMBLE", text: "Grenades do not tumble when fired", value: 10, only: ["GRENADE"]},
     { id: "DAMAGE_VULN", text: "Raises [VULN] resistance by [NUM]% when active", value: 0.7, multiplier: "[NUM]"},
-    { id: "PYROLAND", text: "On Equip: Visit Pyroland", value: 0},
-    { id: "BROADCAST", text: "Broadcasts every successful hit on an enemy player over the death-notice area", only:["MELEE"], value: 0},
+    { id: "SNIPER_CHARGE", text: "-[NUM]% maximum charge time", only: ["SNIPER"], value: 0.6, multiplier: "[NUM]"},
+    { id: "SNIPER_CHARGE_SPEED", text: "+[NUM]% charging movement speed", only: ["SNIPER"], value: 0.3, multiplier: "[NUM]"},
+    { id: "SNIPER_LASER", text: "No laser pointer indicator", only: ["SNIPER"], value: 40},
+    { id: "SNIPER_PENETRATION", text: "Fully charged shots penetrate players and damage enemies behind them", only: ["SNIPER"], value: 30},
+    { id: "MAX_OVERHEAL", text: "+[NUM]% maximum overheal", value: 0.75, multiplier: "[NUM]"},
+    { id: "OVERHEAL_DECAY", text: "[NUM]% slower overheal decay", value: 0.55, multiplier: "[NUM]"},
+    // { id: "PYROLAND", text: "On Equip: Visit Pyroland", value: 0},
+    // { id: "BROADCAST", text: "Broadcasts every successful hit on an enemy player over the death-notice area", only:["MELEE"], value: 0},
 ];
 
 let classes = [
@@ -107,12 +123,12 @@ function chooseInArr(arr){
 }
 
 function format(char, randnum){
-    var conditions = ["burning targets", "wet targets", "targets attacked from behind", "bleeding targets", "soaked targets", "targets in mid-air"]
+    var conditions = ["burning targets", "wet targets", "targets attacked from behind", "bleeding targets", "soaked targets", "targets in mid-air", "headshots"]
     return char
         .replace("[NUM]", randnum)
         .replace("[ECOND]", chooseInArr(conditions))
         .replace("[HPSRC]", chooseInArr(["medic sources", "health packs", "dispensers", "mediguns", "syringe guns", "all sources"]))
-        .replace("[VULN]", chooseInArr(["bullet", "explosion", "damage"]))
+        .replace("[VULN]", chooseInArr(["bullet", "explosion", "damage", "fire", "headshot"]))
 }
 
 function pickCharacteristic(type){
@@ -146,7 +162,7 @@ function getEnoughChars(threshold=100, limit=30, stats=12){
     var quality = 0
     for(var i = 0; i < rng(2, 3); i++){
         var currentChar = pickCharacteristic("pros");
-        chars.push(currentChar.text)
+        chars.push(`<blue>${currentChar.text}</blue>`)
         quality += currentChar.value * currentChar.multiplier;
         pros = pros.filter(pro => pro.id != currentChar.id)
         cons = cons.filter(con => con.id != currentChar.id)
@@ -156,7 +172,7 @@ function getEnoughChars(threshold=100, limit=30, stats=12){
     while(quality > limit && chars.length < stats){
         var currentChar = pickCharacteristic("cons") || pickCharacteristic("cons");
         if(!currentChar) return [chars, quality];
-        chars.push(currentChar.text)
+        chars.push(`<red>${currentChar.text}</red>`)
         quality += currentChar.value * currentChar.multiplier;
         cons = cons.filter(con => con.id != currentChar.id)
     }
@@ -167,6 +183,7 @@ var x = getEnoughChars()
 
 var titles = {
     "SCOUT SHOTGUN": "SCOUT SCATTERGUN",
+    "SCOUT GUN": "SCOUT PISTOL",
     "SOLDIER ROCKET": "SOLDIER ROCKET LAUNCHER",
     "DEMOMAN GRENADE": "DEMOMAN GRENADE LAUNCHER",
     "DEMOMAN STICKY": "DEMOMAN STICKY BOMB LAUNCHER",
