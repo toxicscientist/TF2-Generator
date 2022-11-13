@@ -165,7 +165,22 @@ function getEnoughChars(threshold=100, limit=30, stats=12){
 
 var x = getEnoughChars()
 
-document.getElementById('main').innerHTML = `<h1> ${role.name.toUpperCase()} ${weapon}</h1> ${x[0].join('<p />')}`
+var titles = {
+    "SCOUT SHOTGUN": "SCOUT SCATTERGUN",
+    "SOLDIER ROCKET": "SOLDIER ROCKET LAUNCHER",
+    "DEMOMAN GRENADE": "DEMOMAN GRENADE LAUNCHER",
+    "DEMOMAN STICKY": "DEMOMAN STICKY BOMB LAUNCHER",
+    "ENGINEER GUN": "ENGINEER PISTOL",
+    "SNIPER SNIPER": "SNIPER RIFLE",
+    "SNIPER GUN": "SNIPER SMG",
+    "MEDIC GUN": "MEDIC SYRINGE GUN",
+    "SPY GUN": "SPY REVOLVER",
+    "SPY MELEE": "SPY KNIFE",
+}
+
+var title = titles[role.name.toUpperCase() + " " + weapon] ? titles[role.name.toUpperCase() + " " + weapon] : (role.name.toUpperCase() + " " + weapon)
+
+document.getElementById('main').innerHTML = `<h1> ${title}</h1> ${x[0].join('<p />')}`
 let classchoice = '<option value="any">any</option>'
 let classoptions = classes.forEach(classrole => {classchoice += `<option value="${classrole.name}">${classrole.name}</option>`})
 document.getElementById('classes').innerHTML = classchoice
