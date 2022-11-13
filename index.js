@@ -74,6 +74,7 @@ let pros = [
     { id: "AFTERBURN_DAMAGE", text: "Deals [NUM]% more afterburn damage", value: 0.675, only: ["FLAMETHROWER"], multiplier: "[NUM]"},
     { id: "MEDIBEAM_TRANSFER", text: "Damage transfers to all players connected by Medic beams", value: 15, only: ["MELEE"]},
     { id: "NO_TUMBLE", text: "Grenades do not tumble when fired", value: 10, only: ["GRENADE"]},
+    { id: "DAMAGE_VULN", text: "Raises [VULN] resistance by [NUM]% when active", value: 0.7, multiplier: "[NUM]"},
     { id: "PYROLAND", text: "On Equip: Visit Pyroland", value: 0},
     { id: "BROADCAST", text: "Broadcasts every successful hit on an enemy player over the death-notice area", only:["MELEE"], value: 0},
 ];
@@ -124,9 +125,16 @@ function pickCharacteristic(type){
     return char
 }
 
+function setQString(name, value){
+    var searchParams = new URLSearchParams(window.location.search);
+    searchParams.set(name, value);
+    window.location.search = searchParams.toString();
+}
 
+let params = (new URL(document.location)).searchParams;
+let reqclass = params.get('class')
 
-var role = chooseInArr(classes)
+var role = (reqclass == "any" || !reqclass) ? chooseInArr(classes) : classes.find(x => x.name == reqclass)
 var weapon = chooseInArr(role.weapons)
 pros = pros.filter(pro => pro.not ? !pro.not.includes(weapon) : pros)
 cons = cons.filter(con => con.not ? !con.not.includes(weapon) : cons)

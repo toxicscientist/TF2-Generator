@@ -8,9 +8,10 @@
 </head>
 <body>
     <div id="options">
-        <select id="classes" onchange="">
+        <select id="classes" onchange="setQString('class', this.value)">
             
         </select>
+        <button id="regen" onclick="document.location.reload()">regenerate</button>
     </div>
     <div id="main">
         
