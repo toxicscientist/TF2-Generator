@@ -124,6 +124,8 @@ function pickCharacteristic(type){
     return char
 }
 
+
+
 var role = chooseInArr(classes)
 var weapon = chooseInArr(role.weapons)
 pros = pros.filter(pro => pro.not ? !pro.not.includes(weapon) : pros)
@@ -155,6 +157,7 @@ function getEnoughChars(threshold=100, limit=30, stats=12){
 
 var x = getEnoughChars()
 
-// WHY WONT IT FIND THE DIV???? THATS ALL I WANT! JUST FIND THE DAMN DIV AND WRITE TO IT
-console.log(document.children[0].children)
-document.getElementById('main') = `<h1> ${role.name.toUpperCase()} ${weapon}</h1> ${x[0].join('<p />')}`
+document.getElementById('main').innerHTML = `<h1> ${role.name.toUpperCase()} ${weapon}</h1> ${x[0].join('<p />')}`
+let classchoice = '<option value="any">any</option>'
+let classoptions = classes.forEach(classrole => {classchoice += `<option value="${classrole.name}">${classrole.name}</option>`})
+document.getElementById('classes').innerHTML = classchoice
