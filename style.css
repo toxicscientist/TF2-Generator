@@ -5,13 +5,10 @@ body{
     background: #24201b;
     font-family: sans-serif;
 }
-red{
-    color: #FF4040
+footer{
+    font-style: oblique
 }
-blue{
-    color: #99CCFF
-}
-#footer{
-    color: #888;
-    font-size: xx-small;
-}
+
+red{color: #FF4040}
+blue{color: #99CCFF}
+grey{color: #ffffff70}
